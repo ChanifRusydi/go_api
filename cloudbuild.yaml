@@ -1,0 +1,27 @@
+steps:
+  # Run tests and save to file
+  - name: golang:1.22
+    entrypoint: /bin/bash
+    args: 
+      - -c
+  
+  # [START cloudbuild_go_image_yaml]
+  # Docker Build
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 
+           'us-central1-docker.pkg.dev/$ch-ml-model/$_REPO_NAME/myimage:$SHORT_SHA', '.']
+  # [END cloudbuild_go_image_yaml]
+  
+  # [START cloudbuild_go_push_yaml]
+  # Docker push to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$ch-ml-model/$_REPO_NAME/myimage:$SHORT_SHA']
+  # [END cloudbuild_go_push_yaml]
+
+
+# [START cloudbuild_go_logs_yaml]
+# Save test logs to Google Cloud Storage
+
+images:
+  - us-central1-docker.pkg.dev/$ch-ml-model/$_REPO_NAME/myimage:$SHORT_SHA
+# [END cloudbuild_go_yaml]
